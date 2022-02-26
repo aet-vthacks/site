@@ -6,7 +6,7 @@ import {
 	useColorModeValue
 } from "@chakra-ui/react";
 import { useState } from "react";
-import { Link as RouterLink } from "react-router-dom";
+import { Link as RouterLink, useNavigate } from "react-router-dom";
 import { http } from "utils";
 import { z } from "zod";
 
@@ -36,8 +36,9 @@ export default function SignupPage() {
 		&& firstname.length > 0
 		&& lastname.length > 0;
 
+	const navigate = useNavigate();
 	const onSubmit = async () => {
-		await http.post("signup", {
+		const { status } = await http.post("signup", {
 			json: {
 				firstname,
 				lastname,
@@ -45,7 +46,19 @@ export default function SignupPage() {
 				password
 			}
 		});
+
+		if (status === 200) {
+			navigate("/learn");
+		}
 	};
+
+	http.get("me")
+		.then(res => {
+			if (res.status === 200) {
+				navigate("/account");
+			}
+		})
+		.catch(() => {});
 
 	return (
 		<Flex

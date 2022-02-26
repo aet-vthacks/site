@@ -1,5 +1,8 @@
 import { ChakraProvider, extendTheme } from "@chakra-ui/react";
 import NavBar from "components/NavBar";
+import AccountPage from "pages/AccountPage";
+import HomePage from "pages/HomePage";
+import LearnPage from "pages/LearnPage";
 import LoginPage from "pages/LoginPage";
 import SignupPage from "pages/SignupPage";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
@@ -17,6 +20,9 @@ export default function App() {
 					<Routes>
 						<Route path="/signup" element={<SignupPage />} />
 						<Route path="/login" element={<LoginPage />} />
+						<Route path="/account" element={<AccountPage />} />
+						<Route path="/learn" element={<LearnPage />} />
+						<Route path="/" element={<HomePage />} />
 					</Routes>
 				</NavBar>
 			</BrowserRouter>

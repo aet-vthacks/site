@@ -1,11 +1,13 @@
 import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
 import { Box, Button, Flex, FormControl, FormLabel, Heading, Input, InputGroup, InputRightElement, Link, Stack, Text, useColorModeValue } from "@chakra-ui/react";
 import { useState } from "react";
-import { Link as RouterLink } from "react-router-dom";
+import { Link as RouterLink, useNavigate } from "react-router-dom";
 import { http } from "utils";
 import { z } from "zod";
 
 export default function LoginPage() {
+	const bg = useColorModeValue("white", "gray.700");
+
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
 	const [showPassword, setShowPassword] = useState(false);
@@ -25,14 +27,27 @@ export default function LoginPage() {
 		&& email.length > 0
 		&& password.length > 0;
 
+	const navigate = useNavigate();
 	const onSubmit = async () => {
-		await http.post("login", {
+		const { status } = await http.post("login", {
 			json: {
 				email,
 				password
 			}
 		});
+
+		if (status === 200) {
+			navigate("/learn");
+		}
 	};
+
+	http.get("me")
+		.then(res => {
+			if (res.status === 200) {
+				navigate("/account");
+			}
+		})
+		.catch(() => {});
 
 	return (
 		<Flex
@@ -50,7 +65,7 @@ export default function LoginPage() {
 				</Stack>
 				<Box
 					rounded={"lg"}
-					bg={useColorModeValue("white", "gray.700")}
+					bg={bg}
 					boxShadow={"lg"}
 					p={8}>
 					<Stack spacing={4}>
