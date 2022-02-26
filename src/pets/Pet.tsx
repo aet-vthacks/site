@@ -3,6 +3,8 @@ import happyState from "assets/happy_data.svg?raw";
 import normal2State from "assets/idle_2_data.svg?raw";
 import normalState from "assets/normal_data.svg?raw";
 import sadState from "assets/sad_data.svg?raw";
+import slimeIdle1State from "assets/slime0_data.svg?raw";
+import slimeIdle2State from "assets/slime1_data.svg?raw";
 import surpriseState from "assets/surprise_data.svg?raw";
 import talkCloseState from "assets/talk_close_data.svg?raw";
 import talkOpenState from "assets/talk_open_data.svg?raw";
@@ -12,20 +14,18 @@ import { useEffect, useRef, useState } from "react";
 
 
 
+
+
+
 type Rarity = "common" | "rare" | "super rare" | "uber rare";
 
 type Emotion = "surprised" | "happy" | "sad" | "talk";
 type Vec2 = [number, number];
 
-type Species = "snake-mon" | "fire-mon";
+type Species = "snake-mon" | "slime";
 
 type PetStateSet = {[key: string]: PetState[]};
 type PetState = string[];
-
-interface TextState {
-	text: string;
-	textID: number;
-}
 
 interface LayerDescriptor {
 	className: string;
@@ -39,10 +39,22 @@ const genRarity = (): Rarity => {
 	return "common";
 };
 
-const genSpeciesColors = (species: Species, rarity: Rarity): (string | null)[] => {
+const genSpeciesColors = (species: Species, rarity: Rarity, rng: number = Math.random()): (string | null)[] => {
 	switch (species) {
 		case "snake-mon": {
-			const rng = Math.random();
+			if (rarity === "uber rare") {
+				const yellow = "yellow";
+				return [null, interpolate(["gray", "black"])(rng), yellow, yellow];
+			}
+			if (rarity === "super rare") { // shiny
+				return [null, interpolate(["#806780", "palevioletred"])(rng), null, null];
+			}
+			if (rarity === "rare") {
+				return [null, interpolate(["#437558", "cadetblue"])(rng), null, null];
+			}
+			return [null, interpolate(["greenyellow", "#426344"])(rng), null, null];
+		}
+		case "slime": {
 			if (rarity === "uber rare") {
 				const yellow = "yellow";
 				return [null, interpolate(["gray", "black"])(rng), yellow, yellow];
@@ -69,13 +81,13 @@ export class Pet {
 	triggerEmotionFunc: ((emotion: Emotion) => void) = (emotion: Emotion) => {};
 	speakFunc: ((str: string, time: number) => void) = (str: string, time: number) => {};
 
-	constructor(name: string, species: Species, states: PetStateSet, layerDescriptors: LayerDescriptor[]) {
-		this.rarity = genRarity();
+	constructor(name: string, species: Species, rarity: Rarity, colors: (string | null)[]) {
+		this.rarity = rarity;
 		this.name = name;
 		this.species = species;
-		this.states = states;
-		this.layerDescriptors = layerDescriptors;
-		this.colors = genSpeciesColors(species, this.rarity);
+		this.states = genLayerStates(species);
+		this.layerDescriptors = genLayerDescriptors(species);
+		this.colors = colors;
 	}
 	
 	initIdleState = (): PetState[] => {
@@ -381,11 +393,42 @@ export class Pet {
 
 const noStyle: LayerDescriptor = {className: "Basic"};
 
-export const makeSnake = (name: string): Pet => {
+export const genLayerDescriptors = (species: Species) => {
+	switch (species) {
+		case "snake-mon": {
+			return [{className: "SnakeTounge"}, {className: "Snake"}, noStyle, noStyle];
+		}
+		case "slime": {
+			return [{className: "Basic"}, {className: "Basic"}, noStyle, noStyle];
+		}
+	}
+	return [];
+};
 
-	readState(normalState);
-
-	const states: PetStateSet = {
+export const genLayerStates = (species: Species): PetStateSet => {
+	switch (species) {
+		case "snake-mon": {
+			return {
+				normal: [readState(normalState)],
+				normal2: [readState(normal2State)],
+				happy: [readState(happyState)],
+				surprised: [readState(surpriseState)],
+				sad: [readState(sadState)],
+				talk: [readState(talkOpenState), readState(talkCloseState)]
+			};
+		}
+		case "slime": {
+			return {
+				normal: [readState(slimeIdle1State)],
+				normal2: [readState(slimeIdle2State)],
+				happy: [readState(slimeIdle1State)],
+				surprised: [readState(slimeIdle1State)],
+				sad: [readState(slimeIdle1State)],
+				talk: [readState(slimeIdle1State), readState(slimeIdle1State)]
+			};
+		}
+	}
+	return {
 		normal: [readState(normalState)],
 		normal2: [readState(normal2State)],
 		happy: [readState(happyState)],
@@ -393,10 +436,11 @@ export const makeSnake = (name: string): Pet => {
 		sad: [readState(sadState)],
 		talk: [readState(talkOpenState), readState(talkCloseState)]
 	};
-	return new Pet(name, "snake-mon", states, [{className: "SnakeTounge"}, {className: "Snake", base: true}, noStyle, noStyle]);
 };
 
-export const readState = (fileContents: string): PetState => {
+
+
+const readState = (fileContents: string): PetState => {
 	const state: PetState = [];
 
 	const lookFor = " d=";
@@ -406,4 +450,10 @@ export const readState = (fileContents: string): PetState => {
 	}
 
 	return state;
+};
+
+export const genPet = (species: Species, name: string) => {
+	const rarity = genRarity();
+
+	return new Pet(name, species, rarity, genSpeciesColors(species, rarity));
 };

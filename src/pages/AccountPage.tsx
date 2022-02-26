@@ -1,5 +1,5 @@
 import { Button, Flex, Spinner, Stack, Text } from "@chakra-ui/react";
-import { makeSnake, Pet } from "pets/Pet";
+import { genPet, Pet } from "pets/Pet";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { AccountData } from "types";
@@ -12,7 +12,7 @@ export default function AccountPage() {
 	const [data, setData] = useState<AccountData | undefined>(undefined);
 
 	const [pets] = useState<Pet[]>([
-		makeSnake("Slizzy"), makeSnake("Slinky"), makeSnake("Slippy")
+		genPet("snake-mon", "Slizzy"), genPet("snake-mon", "Slinky"), genPet("snake-mon", "Slippy")
 	]);
 
 	useEffect(() => {

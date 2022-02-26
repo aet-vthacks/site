@@ -1,11 +1,10 @@
 import { Box, Button, Flex, Heading, Stack, Text, useColorModeValue } from "@chakra-ui/react";
-import { makeSnake, Pet } from "pets/Pet";
+import { genPet, Pet } from "pets/Pet";
 import { useState } from "react";
 
 export default function PetPage() {
 
-
-	const [pet, setPet] = useState<Pet>(makeSnake("Slinky"));
+	const [pet] = useState<Pet>(genPet("slime", "Slimy"));
 
 	return (
 		<Flex
