@@ -9,10 +9,20 @@ import "pets/pets.css";
 import { useEffect, useState } from "react";
 
 
-type Emotion = "surprised" | "happy" | "spin" | "sad";
+
+
+type Emotion = "surprised" | "happy" | "sad";
 type Vec2 = [number, number];
 
 type Species = "snake-mon" | "bean";
+
+type PetStateSet = {[key: string]: PetState};
+type PetState = string[];
+
+interface LayerDescriptor {
+	className: string;
+	base?: boolean;
+}
 
 const speciesColor = (species: Species): string => {
 	switch (species) {
@@ -34,7 +44,8 @@ export class Pet {
 	states: PetStateSet;
 	layerDescriptors: LayerDescriptor[];
 	color: string;
-	triggerEmotionFunc: ((emotion: Emotion) => void) | null = null;
+	triggerEmotionFunc: ((emotion: Emotion) => void) = (emotion: Emotion) => {};
+	speakFunc: ((str: string, time: number) => void) = (str: string, time: number) => {};
 
 	constructor(name: string, species: Species, states: PetStateSet, layerDescriptors: LayerDescriptor[]) {
 		this.name = name;
@@ -44,12 +55,12 @@ export class Pet {
 		this.color = speciesColor(species);
 	}
 	
-	initState = (): PetState => {
-		return Object.values(this.states)[0]; // TODO:
+	initIdleState = (): PetState => {
+		return Object.values(this.states)[0];
 	};
 
-	finalState = (): PetState => {
-		return Object.values(this.states)[1]; // TODO:
+	finalIdleState = (): PetState => {
+		return Object.values(this.states)[1];
 	};
 
 	genUI = () => {
@@ -57,6 +68,12 @@ export class Pet {
 		const [emotion, setEmotion] = useState<Emotion>("happy");
 		const [pos, setPos] = useState<Vec2>([0, 0]);
 		const [emotionTriggerCount, setEmotionTriggerCount] = useState(0);
+		const [text, setText] = useState("");
+
+		this.speakFunc = (str: string, time: number) => {
+			setText(str);
+			setTimeout(() => setText(""), time * 1000);
+		};
 
 		const randomMove = () => {
 			setPos([Math.random() * 140 - 50, -Math.random() * 100]);
@@ -249,24 +266,36 @@ export class Pet {
 		}, [pos]);
 
 		return (
-			<animated.div style={{transform: rotZ}}>
-				<animated.div style={{transform: rotY}}>
-					<animated.div style={{transform: x}}>
-						<animated.div style={{transform: y}}>
+			<animated.div style={{transform: x}}>
+				<animated.div style={{transform: y}}>
+					{text === "" ? null :
+							<div className="SpeechBubble">
+								{text.split("\n")
+									.map((line: string, i: number) => 
+										<span key={`text-line_${i}`}>
+											{line}
+										</span>
+									)}
+							</div>
+					}
+
+					<animated.div style={{transform: rotY}}>
+						<animated.div style={{transform: rotZ}}>
 							<svg viewBox="0 0 200 200" 
 								onClick={() => {
 									randomMove();
+									this.speakFunc("Ow, you bitch!", 1);
 									// resumeIdle();
 								}}
 							>
-								{Object.values(this.initState())
+								{Object.values(this.initIdleState())
 									.map((path: string, i: number) => 
 										<animated.path key={`${this.name}_state_${i}`} className={this.layerDescriptors[i].className}
 											style={this.layerDescriptors[i].base ? {fill: this.color} : {}}	
 											d={time.to({
 												range: [0, 100, 200],
 												output: [
-													path, this.finalState()[i], genFinalState(emotion)[i]
+													path, this.finalIdleState()[i], genFinalState(emotion)[i]
 												]
 											})}
 										/>
@@ -279,14 +308,6 @@ export class Pet {
 
 		);
 	};
-}
-
-type PetStateSet = {[key: string]: PetState};
-type PetState = string[];
-
-interface LayerDescriptor {
-	className: string;
-	base?: boolean;
 }
 
 const noStyle: LayerDescriptor = {className: "Basic"};
