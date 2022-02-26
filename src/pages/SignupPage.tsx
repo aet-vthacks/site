@@ -5,7 +5,7 @@ import {
 	InputGroup, InputRightElement, Link, Stack, Text,
 	useColorModeValue
 } from "@chakra-ui/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
 import { http } from "utils";
 import { z } from "zod";
@@ -54,13 +54,15 @@ export default function SignupPage() {
 		}
 	};
 
-	http.get("me")
-		.then(res => {
-			if (res.status === 200) {
-				navigate("/account");
-			}
-		})
-		.catch(() => {});
+	useEffect(() => {
+		http.get("me")
+			.then(res => {
+				if (res.status === 200) {
+					navigate("/account");
+				}
+			})
+			.catch(() => {});
+	}, [navigate]);
 
 	return (
 		<Flex

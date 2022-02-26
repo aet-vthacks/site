@@ -2,7 +2,7 @@ import {
 	Avatar, Box, Button, Flex, Link, Menu,
 	MenuButton, MenuDivider, MenuItem, MenuList, Spinner, useColorModeValue
 } from "@chakra-ui/react";
-import { ReactNode, useState } from "react";
+import { ReactNode, useEffect, useState } from "react";
 import { AccountData } from "types";
 import { http } from "utils";
 
@@ -13,10 +13,12 @@ export default function NavBar({ children }: { children: ReactNode }) {
 	const [loading, setLoading] = useState(true);
 	const [data, setData] = useState<AccountData | undefined>(undefined);
 
-	http.get("me")
-		.json<AccountData>()
-		.then(res => setData(res))
-		.catch(() => setLoading(false));
+	useEffect(() => {
+		http.get("me")
+			.json<AccountData>()
+			.then(res => setData(res))
+			.catch(() => setLoading(false));
+	}, []);
 
 	if (loading && !data) {
 		return (
