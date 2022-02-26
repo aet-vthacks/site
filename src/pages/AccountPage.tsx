@@ -8,7 +8,7 @@ import { PetBlock } from "./PetPage";
 
 export default function AccountPage() {
 	const navigate = useNavigate();
-	const [loading, setLoading] = useState(true);
+	const [loading] = useState(true);
 	const [data, setData] = useState<AccountData | undefined>(undefined);
 
 	const [pets] = useState<Pet[]>([
@@ -29,7 +29,6 @@ export default function AccountPage() {
 			</Flex>
 		);
 	}
-
 
 	return (
 		<>
