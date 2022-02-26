@@ -284,7 +284,7 @@ export class Pet {
 							<svg viewBox="0 0 200 200" 
 								onClick={() => {
 									randomMove();
-									this.speakFunc("Ow, you bitch!", 1);
+									this.speakFunc("Ow, you meanie!", 1);
 									// resumeIdle();
 								}}
 							>
