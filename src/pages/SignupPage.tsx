@@ -6,9 +6,46 @@ import {
 	useColorModeValue
 } from "@chakra-ui/react";
 import { useState } from "react";
+import { Link as RouterLink } from "react-router-dom";
+import { http } from "utils";
+import { z } from "zod";
 
 export default function SignupPage() {
+	const [email, setEmail] = useState("");
+	const [password, setPassword] = useState("");
+	const [firstname, setFirstname] = useState("");
+	const [lastname, setLastname] = useState("");
 	const [showPassword, setShowPassword] = useState(false);
+
+	const handleEmailChange = (e: any) => setEmail(e.target.value);
+	const handlePasswordChange = (e: any) => setPassword(e.target.value);
+	const handleFirstnameChange = (e: any) => setFirstname(e.target.value);
+	const handleLastnameChange = (e: any) => setLastname(e.target.value);
+
+	const isEmailValid = z.string()
+		.email()
+		.safeParse(email).success;
+
+	const isPasswordValid = z.string()
+		.min(8)
+		.safeParse(password).success;
+
+	const isFormValid = isEmailValid && isPasswordValid
+		&& email.length > 0
+		&& password.length > 0
+		&& firstname.length > 0
+		&& lastname.length > 0;
+
+	const onSubmit = async () => {
+		await http.post("signup", {
+			json: {
+				firstname,
+				lastname,
+				email,
+				password
+			}
+		});
+	};
 
 	return (
 		<Flex
@@ -21,7 +58,7 @@ export default function SignupPage() {
 						Sign up
 					</Heading>
 					<Text fontSize={"lg"} color={"gray.600"}>
-						to get started with Learn.py 🐍
+						Get started with Learn.py 🐍
 					</Text>
 				</Stack>
 				<Box
@@ -34,24 +71,44 @@ export default function SignupPage() {
 							<Box>
 								<FormControl id="firstName" isRequired>
 									<FormLabel>First Name</FormLabel>
-									<Input type="text" />
+									<Input
+										type="text"
+										value={firstname}
+										placeholder="John"
+										onChange={handleFirstnameChange}
+									/>
 								</FormControl>
 							</Box>
 							<Box>
-								<FormControl id="lastName">
+								<FormControl id="lastName" isRequired>
 									<FormLabel>Last Name</FormLabel>
-									<Input type="text" />
+									<Input
+										type="text"
+										value={lastname}
+										placeholder="Doe"
+										onChange={handleLastnameChange}
+									/>
 								</FormControl>
 							</Box>
 						</HStack>
 						<FormControl id="email" isRequired>
 							<FormLabel>Email address</FormLabel>
-							<Input type="email" />
+							<Input
+								type="email"
+								value={email}
+								placeholder="john.doe@example.com"
+								onChange={handleEmailChange}
+							/>
 						</FormControl>
 						<FormControl id="password" isRequired>
 							<FormLabel>Password</FormLabel>
 							<InputGroup>
-								<Input type={showPassword ? "text" : "password"} />
+								<Input
+									type={showPassword ? "text" : "password"}
+									value={password}
+									placeholder="8+ Characters"
+									onChange={handlePasswordChange}
+								/>
 								<InputRightElement h={"full"}>
 									<Button
 										variant={"ghost"}
@@ -66,6 +123,8 @@ export default function SignupPage() {
 						<Stack spacing={10} pt={2}>
 							<Button
 								loadingText="Submitting"
+								isDisabled={!isFormValid}
+								onClick={onSubmit}
 								size="lg"
 								bg={"blue.400"}
 								color={"white"}
@@ -77,7 +136,13 @@ export default function SignupPage() {
 						</Stack>
 						<Stack pt={6}>
 							<Text align={"center"}>
-								Already a user? <Link color={"blue.400"}>Login</Link>
+								Already signed up?
+								{" "}
+								<Link
+									as={RouterLink}
+									color={"blue.400"}
+									to='/login'
+								>Login</Link>
 							</Text>
 						</Stack>
 					</Stack>

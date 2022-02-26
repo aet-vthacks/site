@@ -9,7 +9,8 @@ export default defineConfig({
 	resolve: {
 		alias: {
 			components: resolve(path, "src/components"),
-			pages: resolve(path, "src/pages")
+			pages: resolve(path, "src/pages"),
+			utils: resolve(path, "src/utils")
 		}
 	}
 });

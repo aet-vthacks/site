@@ -2,6 +2,7 @@ import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
 import { Box, Button, Flex, FormControl, FormLabel, Heading, Input, InputGroup, InputRightElement, Link, Stack, Text, useColorModeValue } from "@chakra-ui/react";
 import { useState } from "react";
 import { Link as RouterLink } from "react-router-dom";
+import { http } from "utils";
 import { z } from "zod";
 
 export default function LoginPage() {
@@ -16,7 +17,22 @@ export default function LoginPage() {
 		.email()
 		.safeParse(email).success;
 
-	const isFormValid = isEmailValid && email.length > 0 && password.length > 0;
+	const isPasswordValid = z.string()
+		.min(8)
+		.safeParse(password).success;
+
+	const isFormValid = isEmailValid && isPasswordValid
+		&& email.length > 0
+		&& password.length > 0;
+
+	const onSubmit = async () => {
+		await http.post("login", {
+			json: {
+				email,
+				password
+			}
+		});
+	};
 
 	return (
 		<Flex
@@ -29,7 +45,7 @@ export default function LoginPage() {
 						Welcome Back
 					</Heading>
 					<Text fontSize={"lg"} color={"gray.600"}>
-						to get started with Learn.py 🐍
+						Your pet missed you 🐍
 					</Text>
 				</Stack>
 				<Box
@@ -45,7 +61,6 @@ export default function LoginPage() {
 								value={email}
 								placeholder="john.doe@example.com"
 								onChange={handleEmailChange}
-								isInvalid={!isEmailValid}
 							/>
 						</FormControl>
 						<FormControl id="password" isRequired>
@@ -54,6 +69,7 @@ export default function LoginPage() {
 								<Input
 									type={showPassword ? "text" : "password"}
 									value={password}
+									placeholder="8+ Characters"
 									onChange={handlePasswordChange}
 								/>
 								<InputRightElement h={"full"}>
@@ -71,13 +87,14 @@ export default function LoginPage() {
 							<Button
 								loadingText="Submitting"
 								isDisabled={!isFormValid}
+								onClick={onSubmit}
 								size="lg"
 								bg={"blue.400"}
 								color={"white"}
 								_hover={{
 									bg: "blue.500"
 								}}>
-								Sign up
+								Login
 							</Button>
 						</Stack>
 						<Stack pt={6}>
