@@ -20,15 +20,11 @@ export default function PetPage() {
 					<Text fontSize={"lg"} color={"gray.600"}>
 						species: {pet.species}
 					</Text>
+					<Text fontSize={"lg"} color={"gray.600"}>
+						rarity: {pet.rarity}
+					</Text>
 				</Stack>
-				<Box
-					rounded={"lg"}
-					bg={useColorModeValue("white", "gray.700")}
-					boxShadow={"lg"}
-					p={8}
-				>
-					{pet.genUI()}
-				</Box>
+				<PetBlock pet={pet} />
 				<Button onClick={() => {
 					pet.triggerEmotionFunc("happy");
 				}}>
@@ -53,3 +49,17 @@ export default function PetPage() {
 		</Flex>
 	);
 }
+
+export const PetBlock = ({ pet }: { pet: Pet }) => {
+	return (
+		<Box
+			rounded={"lg"}
+			bg={useColorModeValue("white", "gray.700")}
+			boxShadow={"lg"}
+			h="auto"
+			p={8}
+		>
+			{pet.genUI()}
+		</Box>
+	);
+};
