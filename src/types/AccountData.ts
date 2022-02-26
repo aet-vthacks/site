@@ -6,9 +6,10 @@ export interface AccountData {
 	email: string
 	pets: {
 		name: string
-		color: string
+		colors: (string | undefined)[]
+		rarity: string
 		species: string
-	},
+	}[],
 	progress: {
 		level: number,
 		code: string,

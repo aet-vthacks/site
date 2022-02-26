@@ -50,7 +50,7 @@ export default function SignupPage() {
 		});
 
 		if (status === 200) {
-			navigate("/learn");
+			navigate("/account");
 		}
 	};
 
