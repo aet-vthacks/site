@@ -1,4 +1,4 @@
-import { Flex, Spinner, Text } from "@chakra-ui/react";
+import { Button, Flex, Heading, Spacer, Spinner, Stack, Text } from "@chakra-ui/react";
 import Editor from "@monaco-editor/react";
 import ChakraUIRenderer from "chakra-ui-markdown-renderer";
 import { useEffect, useState } from "react";
@@ -36,6 +36,29 @@ export default function LearnPage() {
 		return (
 			<Flex alignContent="center" justifyContent="center" my={16}>
 				<Spinner />
+			</Flex>
+		);
+	}
+
+	if (!loading && !data) {
+		return (
+			<Flex alignContent="center" alignItems="center" my={16} flexDir="column">
+				<Heading>We couldn't find the Exercise.</Heading>
+				<Text>Lost? Click the button below to go back.</Text>
+				<Spacer />
+				<Stack spacing={16} pt={2}>
+					<Button
+						my={8}
+						onClick={() => {
+							navigate("/learn");
+						}}
+						size="lg"
+						variant="outline"
+						colorScheme="green"
+					>
+						Go back
+					</Button>
+				</Stack>
 			</Flex>
 		);
 	}
