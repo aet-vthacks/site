@@ -51,9 +51,9 @@ const genSpeciesColors = (species: Species, rarity: Rarity): (string | null)[] =
 				return [null, interpolate(["#806780", "palevioletred"])(rng), null, null];
 			}
 			if (rarity === "rare") {
-				return [null, interpolate(["green", "cadetblue"])(rng), null, null];
+				return [null, interpolate(["#437558", "cadetblue"])(rng), null, null];
 			}
-			return [null, interpolate(["greenyellow", "green"])(rng), null, null];
+			return [null, interpolate(["greenyellow", "#426344"])(rng), null, null];
 		}
 	}
 	return [];
