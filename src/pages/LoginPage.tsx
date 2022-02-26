@@ -7,6 +7,7 @@ import { z } from "zod";
 
 export default function LoginPage() {
 	const bg = useColorModeValue("white", "gray.700");
+	const nav = useColorModeValue("gray.50", "gray.800");
 
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
@@ -51,6 +52,7 @@ export default function LoginPage() {
 
 	return (
 		<Flex
+			bg={nav}
 			align={"center"}
 			justify={"center"}
 		>

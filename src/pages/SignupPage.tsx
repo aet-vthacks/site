@@ -11,6 +11,8 @@ import { http } from "utils";
 import { z } from "zod";
 
 export default function SignupPage() {
+	const nav = useColorModeValue("gray.50", "gray.800");
+
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
 	const [firstname, setFirstname] = useState("");
@@ -62,6 +64,7 @@ export default function SignupPage() {
 
 	return (
 		<Flex
+			bg={nav}
 			align={"center"}
 			justify={"center"}
 		>

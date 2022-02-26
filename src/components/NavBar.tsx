@@ -8,7 +8,6 @@ import { http } from "utils";
 
 export default function NavBar({ children }: { children: ReactNode }) {
 	const background = useColorModeValue("gray.100", "gray.900");
-	const nav = useColorModeValue("gray.50", "gray.800");
 	const link = useColorModeValue("gray.200", "gray.700");
 
 	const [loading, setLoading] = useState(true);
@@ -66,7 +65,7 @@ export default function NavBar({ children }: { children: ReactNode }) {
 				</Flex>
 			</Box>
 
-			<Box bg={nav}>
+			<Box>
 				{children}
 			</Box>
 
