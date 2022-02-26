@@ -1,30 +1,69 @@
+import { Flex, Spinner, Text } from "@chakra-ui/react";
 import Editor from "@monaco-editor/react";
-import { useNavigate } from "react-router-dom";
+import ChakraUIRenderer from "chakra-ui-markdown-renderer";
+import { useEffect, useState } from "react";
+import ReactMarkdown from "react-markdown";
+import { useNavigate, useParams } from "react-router-dom";
+import rehypeHighlight from "rehype-highlight";
+import GFM from "remark-gfm";
+import { ExerciseData } from "types";
 import { http } from "utils";
 
 
 export default function LearnPage() {
+	const { id } = useParams();
+	const navigate = useNavigate();
+
 	function handleEditorChange(value: string | undefined) {
 		console.log("here is the current model value:", value);
 	}
 
-	const navigate = useNavigate();
+	const [loading, setLoading] = useState(true);
+	const [data, setData] = useState<ExerciseData | undefined>(undefined);
 
-	http.get("me")
-		.then(res => {
-			if (res.status !== 200) {
-				navigate("/login");
-			}
-		})
-		.catch(() => navigate("/login"));
+	useEffect(() => {
+		http.get(`me/exercise/${id}`)
+			.json<ExerciseData>()
+			.then(res => setData(res))
+			.catch(() => setLoading(false));
+	});
+
+	if (!id) {
+		return <Text>Not Found</Text>;
+	}
+
+	if (loading && !data) {
+		return (
+			<Flex alignContent="center" justifyContent="center" my={16}>
+				<Spinner />
+			</Flex>
+		);
+	}
 
 	return (
-		<Editor
-			width="60vw"
-			height="65vh"
-			defaultLanguage="python"
-			defaultValue="# some comment"
-			onChange={handleEditorChange}
-		/>
+		<>
+			{data ? (
+				<Flex>
+					<Editor
+						width="50vw"
+						height="65vh"
+						defaultLanguage="python"
+						defaultValue={data?.exercise.shellCode}
+						onChange={handleEditorChange}
+					/>
+					<Flex flexDir="column" p={4} maxW="50%">
+						<ReactMarkdown
+							remarkPlugins={[GFM]}
+							rehypePlugins={[rehypeHighlight]}
+							components={ChakraUIRenderer()}
+						>
+							{data.exercise.markdown.replaceAll("{{TITLE}}", data.exercise.title)
+								.replaceAll("{{OBJECTIVE}}", data.exercise.objective)
+								.replaceAll("<br>", "\n\n")}
+						</ReactMarkdown>
+					</Flex>
+				</Flex>
+			) : undefined}
+		</>
 	);
 }
