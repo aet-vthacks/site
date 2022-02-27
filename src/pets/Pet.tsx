@@ -67,7 +67,7 @@ const genSpeciesColors = (species: Species, rarity: Rarity, rng: number = Math.r
 						return interpolate(["#523b68a1", "#431d66a1"])(rng);
 				}
 			})();
-			const eyes = rarity === "uber rare" ? "red" : null;
+			const eyes = rarity === "uber rare" ? "#d64f4f" : null;
 			return [color, color, eyes, eyes];
 		}
 	}
