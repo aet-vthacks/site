@@ -52,20 +52,23 @@ const genSpeciesColors = (species: Species, rarity: Rarity, rng: number = Math.r
 			if (rarity === "rare") {
 				return [null, interpolate(["#437558", "cadetblue"])(rng), null, null];
 			}
-			return [null, interpolate(["greenyellow", "#426344"])(rng), null, null];
+			return [null, interpolate(["#68D391", "#426344"])(rng), null, null];
 		}
 		case "slime": {
-			if (rarity === "uber rare") {
-				const yellow = "yellow";
-				return [null, interpolate(["gray", "black"])(rng), yellow, yellow];
-			}
-			if (rarity === "super rare") { // shiny
-				return [null, interpolate(["#806780", "palevioletred"])(rng), null, null];
-			}
-			if (rarity === "rare") {
-				return [null, interpolate(["#437558", "cadetblue"])(rng), null, null];
-			}
-			return [null, interpolate(["greenyellow", "#426344"])(rng), null, null];
+			const color = (() => {
+				switch (rarity) {
+					case "common":
+						return interpolate(["#7dc99da1", "#0f9949a1"])(rng);
+					case "rare":
+						return interpolate(["#4e828ba1", "#18428fa1"])(rng);
+					case "super rare":
+						return interpolate(["#99380aa1", "#aa1b1ba1"])(rng);
+					case "uber rare":
+						return interpolate(["#523b68a1", "#431d66a1"])(rng);
+				}
+			})();
+			const eyes = rarity === "uber rare" ? "red" : null;
+			return [color, color, eyes, eyes];
 		}
 	}
 	return [];
