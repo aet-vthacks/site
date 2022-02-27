@@ -12,17 +12,10 @@ import interpolate from "color-interpolate";
 import "pets/pets.css";
 import { useEffect, useRef, useState } from "react";
 
-
-
-
-
-
 type Rarity = "common" | "rare" | "super rare" | "uber rare";
-
 type Emotion = "surprised" | "happy" | "sad" | "talk";
-type Vec2 = [number, number];
-
 type Species = "snake-mon" | "slime";
+type Vec2 = [number, number];
 
 type PetStateSet = {[key: string]: PetState[]};
 type PetState = string[];
