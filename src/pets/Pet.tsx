@@ -32,7 +32,7 @@ const genRarity = (): Rarity => {
 	return "common";
 };
 
-const genSpeciesColors = (species: Species, rarity: Rarity, rng: number = Math.random()): (string | null)[] => {
+export const genSpeciesColors = (species: Species, rarity: Rarity, rng: number = Math.random()): (string | null)[] => {
 	switch (species) {
 		case "snake-mon": {
 			if (rarity === "uber rare") {
@@ -85,7 +85,7 @@ export class Pet {
 		this.layerDescriptors = genLayerDescriptors(species);
 		this.colors = colors;
 	}
-	
+
 	initIdleState = (): PetState[] => {
 		return Object.values(this.states)[0];
 	};
@@ -152,7 +152,7 @@ export class Pet {
 				easing: easings.easeOutSine
 			},
 			loop: {reverse: true}
-		}));	
+		}));
 
 		const resumeIdle = () => {
 			api.stop();
@@ -186,21 +186,21 @@ export class Pet {
 								duration: 1000,
 								easing: easings.easeOutElastic
 							}},
-						{time: 100, 
+						{time: 100,
 							config: {
 								duration: 500,
 								easing: easings.easeOutSine
 							}},
-						{time: 0, 
+						{time: 0,
 							config: {
 								duration: 500,
 								easing: easings.easeOutSine
 							}}
-					], 
+					],
 					config: {
 						duration: 500,
 						easing: easings.easeOutElastic
-					}, 
+					},
 					onRest: resumeIdle});
 					break;
 				}
@@ -218,21 +218,21 @@ export class Pet {
 								duration: 1000,
 								easing: easings.easeOutSine
 							}},
-						{time: 100, 
+						{time: 100,
 							config: {
 								duration: 800,
 								easing: easings.easeOutSine
 							}},
-						{time: 0, 
+						{time: 0,
 							config: {
 								duration: 500,
 								easing: easings.easeOutSine
 							}}
-					], 
+					],
 					config: {
 						duration: 500,
 						easing: easings.easeOutElastic
-					}, 
+					},
 					onRest: resumeIdle});
 					break;
 				}
@@ -257,22 +257,22 @@ export class Pet {
 								duration: 500,
 								easing: easings.easeOutSine
 							}},
-						{time: 100, 
+						{time: 100,
 							rotZ: "rotateZ(0deg)",
 							config: {
 								duration: 500,
 								easing: easings.easeOutSine
 							}},
-						{time: 0, 
+						{time: 0,
 							config: {
 								duration: 500,
 								easing: easings.easeOutSine
 							}}
-					], 
+					],
 					config: {
 						duration: 500,
 						easing: easings.easeOutElastic
-					}, 
+					},
 					onRest: resumeIdle});
 					break;
 				}
@@ -288,27 +288,27 @@ export class Pet {
 								easing: easings.easeOutSine
 							}},
 						...arr.map((i: number) =>
-							({time: i % 2 === 0 ? 150 : 200, 
+							({time: i % 2 === 0 ? 150 : 200,
 								config: {
 									duration: 125,
 									easing: easings.easeOutSine
 								}})
 						),
-						{time: 100, 
+						{time: 100,
 							config: {
 								duration: 500,
 								easing: easings.easeOutSine
 							}},
-						{time: 0, 
+						{time: 0,
 							config: {
 								duration: 500,
 								easing: easings.easeOutSine
 							}}
-					], 
+					],
 					config: {
 						duration: 500,
 						easing: easings.easeOutElastic
-					}, 
+					},
 					onRest: resumeIdle});
 					break;
 				}
@@ -346,7 +346,7 @@ export class Pet {
 				<animated.div style={{transform: y}}>
 					<animated.div style={{transform: rotY}}>
 						<animated.div style={{transform: rotZ}}>
-							<svg viewBox="0 0 200 200" 
+							<svg viewBox="0 0 200 200"
 								onClick={() => {
 									randomMove();
 									this.speakFunc("Ow, you meanie!", 4);
@@ -360,7 +360,7 @@ export class Pet {
 											path, this.finalIdleState()[0][i], ...states.map((state: PetState) => state[i])
 										];
 										return <animated.path key={`${this.name}_state_${i}`} className={this.layerDescriptors[i].className}
-											style={this.colors[i] !== null ? {fill: this.colors[i] as string} : {}}	
+											style={this.colors[i] !== null ? {fill: this.colors[i] as string} : {}}
 											d={time.to({
 												range, output
 											})}
@@ -373,7 +373,7 @@ export class Pet {
 					{text === "" ? null :
 							<div className="SpeechBubble">
 								{text.split("\n")
-									.map((line: string, i: number) => 
+									.map((line: string, i: number) =>
 										<span key={`text-line_${i}`}>
 											{line}
 										</span>

@@ -1,6 +1,7 @@
 import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
 import {
 	Box, Button, Flex, FormControl,
+	FormHelperText,
 	FormLabel, Heading, HStack, Input,
 	InputGroup, InputRightElement, Link, Stack, Text,
 	useColorModeValue
@@ -8,33 +9,23 @@ import {
 import { useEffect, useState } from "react";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
 import { http } from "utils";
-import { z } from "zod";
 
 export default function SignupPage() {
 	const nav = useColorModeValue("gray.50", "gray.800");
 
-	const [email, setEmail] = useState("");
+	const [username, setUsername] = useState("");
 	const [password, setPassword] = useState("");
 	const [firstname, setFirstname] = useState("");
 	const [lastname, setLastname] = useState("");
 	const [showPassword, setShowPassword] = useState(false);
 
-	const handleEmailChange = (e: any) => setEmail(e.target.value);
+	const handleUsernameChange = (e: any) => setUsername(e.target.value);
 	const handlePasswordChange = (e: any) => setPassword(e.target.value);
 	const handleFirstnameChange = (e: any) => setFirstname(e.target.value);
 	const handleLastnameChange = (e: any) => setLastname(e.target.value);
 
-	const isEmailValid = z.string()
-		.email()
-		.safeParse(email).success;
-
-	const isPasswordValid = z.string()
-		.min(8)
-		.safeParse(password).success;
-
-	const isFormValid = isEmailValid && isPasswordValid
-		&& email.length > 0
-		&& password.length > 0
+	const isFormValid = username.length > 3
+		&& password.length > 6
 		&& firstname.length > 0
 		&& lastname.length > 0;
 
@@ -44,7 +35,7 @@ export default function SignupPage() {
 			json: {
 				firstname,
 				lastname,
-				email,
+				username,
 				password
 			}
 		});
@@ -109,14 +100,17 @@ export default function SignupPage() {
 								</FormControl>
 							</Box>
 						</HStack>
-						<FormControl id="email" isRequired>
-							<FormLabel>Email address</FormLabel>
+						<FormControl id="username" isRequired>
+							<FormLabel>Username</FormLabel>
 							<Input
-								type="email"
-								value={email}
-								placeholder="john.doe@example.com"
-								onChange={handleEmailChange}
+								type="text"
+								value={username}
+								placeholder="slippy777"
+								onChange={handleUsernameChange}
 							/>
+							<FormHelperText>
+								Usernames must be 3+ characters
+							</FormHelperText>
 						</FormControl>
 						<FormControl id="password" isRequired>
 							<FormLabel>Password</FormLabel>
@@ -137,6 +131,9 @@ export default function SignupPage() {
 									</Button>
 								</InputRightElement>
 							</InputGroup>
+							<FormHelperText>
+								Passwords must be 6+ characters
+							</FormHelperText>
 						</FormControl>
 						<Stack spacing={10} pt={2}>
 							<Button

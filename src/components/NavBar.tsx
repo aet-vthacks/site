@@ -1,14 +1,17 @@
+import { AtSignIcon, LockIcon } from "@chakra-ui/icons";
 import {
-	Avatar, Box, Button, Flex, Link, Menu,
-	MenuButton, MenuDivider, MenuItem, MenuList, Spinner, useColorModeValue
+	Avatar, Box, Button, Flex, Menu,
+	MenuButton, MenuDivider, MenuItem, MenuList, Spinner,
+	useToast
 } from "@chakra-ui/react";
 import { ReactNode, useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { AccountData } from "types";
 import { http } from "utils";
 
 export default function NavBar({ children }: { children: ReactNode }) {
-	const background = useColorModeValue("gray.100", "gray.900");
-	const link = useColorModeValue("gray.200", "gray.700");
+	const navigate = useNavigate();
+	const toast = useToast();
 
 	const [loading, setLoading] = useState(true);
 	const [data, setData] = useState<AccountData | undefined>(undefined);
@@ -30,7 +33,7 @@ export default function NavBar({ children }: { children: ReactNode }) {
 
 	return (
 		<>
-			<Box bg={background} px={4}>
+			<Box bg="green.300" px={4}>
 				<Flex h={16} alignItems={"center"} justifyContent={"flex-end"}>
 					<Flex alignItems={"center"} textAlign={"end"}>
 						{data ? (
@@ -47,22 +50,38 @@ export default function NavBar({ children }: { children: ReactNode }) {
 									/>
 								</MenuButton>
 								<MenuList>
-									<MenuItem>My Account</MenuItem>
+									<MenuItem
+										icon={<AtSignIcon />}
+										onClick={() => navigate("/account")}
+									>
+										My Account
+									</MenuItem>
 									<MenuDivider />
-									<MenuItem color="red">Sign Out</MenuItem>
+									<MenuItem
+										icon={<LockIcon />}
+										color="red.400"
+										onClick={() => http.get("logout")
+											.then(() => {
+												navigate("/account");
+											})
+											.catch(() => toast({
+												title: "Uh Oh!",
+												description: "An unknown error has occured",
+												status: "error"
+											}))}
+									>
+										Sign Out
+									</MenuItem>
 								</MenuList>
 							</Menu>
-						) : <Link
-							px={4}
-							py={2}
-							rounded={"md"}
-							_hover={{
-								textDecoration: "none",
-								bg: link
-							}}
-							href={"/login"}>
-									Sign In
-						</Link>}
+						) : <>
+							<Button
+								variant="solid"
+								onClick={() => navigate("/login")}
+							>
+							Sign In
+							</Button>
+						</>}
 					</Flex>
 				</Flex>
 			</Box>

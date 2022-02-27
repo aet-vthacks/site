@@ -3,36 +3,25 @@ import { Box, Button, Flex, FormControl, FormLabel, Heading, Input, InputGroup, 
 import { useEffect, useState } from "react";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
 import { http } from "utils";
-import { z } from "zod";
 
 export default function LoginPage() {
 	const bg = useColorModeValue("white", "gray.700");
 	const nav = useColorModeValue("gray.50", "gray.800");
 
-	const [email, setEmail] = useState("");
+	const [username, setUsername] = useState("");
 	const [password, setPassword] = useState("");
 	const [showPassword, setShowPassword] = useState(false);
 
-	const handleEmailChange = (e: any) => setEmail(e.target.value);
+	const handleUsernameChange = (e: any) => setUsername(e.target.value);
 	const handlePasswordChange = (e: any) => setPassword(e.target.value);
 
-	const isEmailValid = z.string()
-		.email()
-		.safeParse(email).success;
-
-	const isPasswordValid = z.string()
-		.min(8)
-		.safeParse(password).success;
-
-	const isFormValid = isEmailValid && isPasswordValid
-		&& email.length > 0
-		&& password.length > 0;
+	const isFormValid = username.length > 3 && password.length > 6;
 
 	const navigate = useNavigate();
 	const onSubmit = async () => {
 		const { status } = await http.post("login", {
 			json: {
-				email,
+				username,
 				password
 			}
 		});
@@ -73,13 +62,14 @@ export default function LoginPage() {
 					boxShadow={"lg"}
 					p={8}>
 					<Stack spacing={4}>
-						<FormControl id="email" isRequired>
-							<FormLabel>Email address</FormLabel>
+						<FormControl id="username" isRequired>
+							<FormLabel>Username</FormLabel>
 							<Input
-								type="email"
-								value={email}
-								placeholder="john.doe@example.com"
-								onChange={handleEmailChange}
+								type="text"
+								value={username}
+								placeholder="slippy777"
+								onChange={handleUsernameChange}
+								isInvalid={true}
 							/>
 						</FormControl>
 						<FormControl id="password" isRequired>
@@ -93,7 +83,7 @@ export default function LoginPage() {
 								/>
 								<InputRightElement h={"full"}>
 									<Button
-										variant={"ghost"}
+										variant="ghost"
 										onClick={() =>
 											setShowPassword((showPassword) => !showPassword)
 										}>
@@ -108,11 +98,8 @@ export default function LoginPage() {
 								isDisabled={!isFormValid}
 								onClick={onSubmit}
 								size="lg"
-								bg={"blue.400"}
-								color={"white"}
-								_hover={{
-									bg: "blue.500"
-								}}>
+								colorScheme="green"
+							>
 								Login
 							</Button>
 						</Stack>

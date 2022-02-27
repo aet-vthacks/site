@@ -1,4 +1,4 @@
-import { Button, Center, Flex, Heading, Spacer, Spinner, Stack, Text } from "@chakra-ui/react";
+import { Button, Center, Flex, Heading, Spacer, Spinner, Stack, Text, useColorMode } from "@chakra-ui/react";
 import Editor from "@monaco-editor/react";
 import ChakraUIRenderer from "chakra-ui-markdown-renderer";
 import { useEffect, useState } from "react";
@@ -13,6 +13,7 @@ import { http } from "utils";
 export default function LearnPage() {
 	const { id } = useParams();
 	const navigate = useNavigate();
+	const { colorMode } = useColorMode();
 
 	const [loading, setLoading] = useState(true);
 	const [data, setData] = useState<ExerciseData | undefined>(undefined);
@@ -53,7 +54,7 @@ export default function LearnPage() {
 					navigate("/login");
 				}
 			})
-			.catch(() => {});
+			.catch(() => navigate("/login"));
 	}, [id, navigate]);
 
 	if (!id) {
@@ -102,6 +103,7 @@ export default function LearnPage() {
 							loading={<Center>
 								<Spinner />
 							</Center>}
+							theme={colorMode === "light" ? "light" : "vs-dark"}
 							defaultLanguage="python"
 							defaultValue={data?.exercise.shellCode}
 							onChange={handleEditorChange}
