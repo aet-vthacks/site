@@ -7,7 +7,6 @@ export const http = ky.extend({
 	hooks: {
 		beforeRequest: [
 			request => {
-				request.headers.set("User-Agent", "LP/1.0 (compatible)");
 				request.headers.set("Content-Type", "application/json");
 			}
 		]

@@ -1,5 +1,5 @@
 import { Button, Flex, Spinner, Stack, Text } from "@chakra-ui/react";
-import { genPet, Pet } from "pets/Pet";
+import { genPet, Pet, Rarity, Species } from "pets/Pet";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { AccountData } from "types";
@@ -11,9 +11,11 @@ export default function AccountPage() {
 	const [loading] = useState(true);
 	const [data, setData] = useState<AccountData | undefined>(undefined);
 
-	const [pets] = useState<Pet[]>([
+	const [petOptions] = useState<Pet[]>([
 		genPet("snake-mon", "Slizzy"), genPet("snake-mon", "Slinky"), genPet("snake-mon", "Slippy")
 	]);
+
+	const [pets, setPets] = useState<Pet[]>([]);
 
 	useEffect(() => {
 		http.get("me")
@@ -21,6 +23,12 @@ export default function AccountPage() {
 			.then(res => setData(res))
 			.catch(() => navigate("/login"));
 	}, [navigate]);
+
+	useEffect(() => {
+		if (!data) return;
+
+		setPets(petsFromDataPets(data.pets));
+	}, [data, setPets]);
 
 	if (loading && !data) {
 		return (
@@ -38,7 +46,7 @@ export default function AccountPage() {
 					justifyContent={"center"}
 					flexDirection={"row"}
 				>
-					{pets.map((pet, i) =>
+					{petOptions.map((pet, i) =>
 						<Stack spacing={8} mx={"auto"} w={"lg"} p={6} key={`selection_${i}`}>
 							<PetBlock pet={pet} />
 							<Button
@@ -48,11 +56,32 @@ export default function AccountPage() {
 									});
 								}}
 							>Select {pet.name}</Button>
-
 						</Stack>
 					)}
 				</Flex>
-			) : <Text>Account</Text>}
+			) :
+					<Flex
+						alignItems={"center"}
+						justifyContent={"center"}
+						flexDirection={"row"}
+					>
+						{pets.map((pet: Pet, i: number) =>
+							<Stack spacing={8} mx={"auto"} w={"lg"} p={6} key={`selection_${i}`} onClick={()=>{
+								console.log("sent change", i);
+								http.post("me/pet/change", {
+									json: {position: i}
+								});
+							}}>
+								<PetBlock pet={pet} />
+								<Text>{pet.name}</Text>
+							</Stack>
+						)}
+					</Flex>}
 		</>
 	);
 }
+
+// TODO: fix types
+export const petsFromDataPets = (pets: any) => {
+	return pets.map((petData: any) => new Pet(petData.name, petData.species as Species, petData.rarity as Rarity, petData.colors.map((elem: any) => elem === undefined ? null : elem)));
+};

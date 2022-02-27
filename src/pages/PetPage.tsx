@@ -49,7 +49,7 @@ export default function PetPage() {
 	);
 }
 
-export const PetBlock = ({ pet }: { pet: Pet }) => {
+export const PetBlock = ({ pet, textBoxHeight = 220 }: { pet: Pet, textBoxHeight?: number }) => {
 	return (
 		<Box
 			rounded={"lg"}
@@ -58,7 +58,7 @@ export const PetBlock = ({ pet }: { pet: Pet }) => {
 			h="auto"
 			p={8}
 		>
-			{pet.genUI()}
+			{pet.genUI(textBoxHeight)}
 		</Box>
 	);
 };

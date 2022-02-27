@@ -118,7 +118,7 @@ export default function SignupPage() {
 								<Input
 									type={showPassword ? "text" : "password"}
 									value={password}
-									placeholder="8+ Characters"
+									placeholder="Enter your password"
 									onChange={handlePasswordChange}
 								/>
 								<InputRightElement h={"full"}>

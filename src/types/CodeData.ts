@@ -2,6 +2,7 @@ export interface CodeData {
 	data: [
 		{
 			status: boolean,
+			reason: string,
 			values: { name: string, value: string }[],
 			raw: SuccessfulRaw | FailedRaw
 		}

@@ -5,6 +5,7 @@ import normalState from "assets/normal_data.svg?raw";
 import sadState from "assets/sad_data.svg?raw";
 import slimeIdle1State from "assets/slime0_data.svg?raw";
 import slimeIdle2State from "assets/slime1_data.svg?raw";
+import slimeSadState from "assets/slime_sad_data.svg?raw";
 import surpriseState from "assets/surprise_data.svg?raw";
 import talkCloseState from "assets/talk_close_data.svg?raw";
 import talkOpenState from "assets/talk_open_data.svg?raw";
@@ -12,9 +13,11 @@ import interpolate from "color-interpolate";
 import "pets/pets.css";
 import { useEffect, useRef, useState } from "react";
 
-type Rarity = "common" | "rare" | "super rare" | "uber rare";
+
+
+export type Rarity = "common" | "rare" | "super rare" | "uber rare";
 type Emotion = "surprised" | "happy" | "sad" | "talk";
-type Species = "snake-mon" | "slime";
+export type Species = "snake-mon" | "slime";
 type Vec2 = [number, number];
 
 type PetStateSet = {[key: string]: PetState[]};
@@ -81,9 +84,10 @@ export class Pet {
 		this.rarity = rarity;
 		this.name = name;
 		this.species = species;
-		this.states = genLayerStates(species);
-		this.layerDescriptors = genLayerDescriptors(species);
 		this.colors = colors;
+		const info = genConstructorInfo(species);
+		this.states = info.stateSet;
+		this.layerDescriptors = info.layerDescriptors;
 	}
 
 	initIdleState = (): PetState[] => {
@@ -94,7 +98,7 @@ export class Pet {
 		return Object.values(this.states)[1];
 	};
 
-	genUI = () => {
+	genUI = (textBoxHeight: number) => {
 
 		const [emotion, setEmotion] = useState<Emotion>("happy");
 		const [pos, setPos] = useState<Vec2>([0, 0]);
@@ -175,7 +179,6 @@ export class Pet {
 
 		const triggerEmotion = () => {
 			api.stop();
-			console.log("start", emotion);
 			switch (emotion) {
 				case "surprised": {
 					api.start({to: [
@@ -371,7 +374,7 @@ export class Pet {
 					</animated.div>
 
 					{text === "" ? null :
-							<div className="SpeechBubble">
+							<div className="SpeechBubble" style={{bottom: textBoxHeight}}>
 								{text.split("\n")
 									.map((line: string, i: number) =>
 										<span key={`text-line_${i}`}>
@@ -389,48 +392,38 @@ export class Pet {
 
 const noStyle: LayerDescriptor = {className: "Basic"};
 
-export const genLayerDescriptors = (species: Species) => {
-	switch (species) {
-		case "snake-mon": {
-			return [{className: "SnakeTounge"}, {className: "Snake"}, noStyle, noStyle];
-		}
-		case "slime": {
-			return [{className: "Basic"}, {className: "Basic"}, noStyle, noStyle];
-		}
-	}
-	return [];
-};
+interface PetConstructorInfo {
+	stateSet: PetStateSet;
+	layerDescriptors: LayerDescriptor[];
+}
 
-export const genLayerStates = (species: Species): PetStateSet => {
+
+const genConstructorInfo = (species: Species): PetConstructorInfo => {
 	switch (species) {
 		case "snake-mon": {
 			return {
-				normal: [readState(normalState)],
-				normal2: [readState(normal2State)],
-				happy: [readState(happyState)],
-				surprised: [readState(surpriseState)],
-				sad: [readState(sadState)],
-				talk: [readState(talkOpenState), readState(talkCloseState)]
-			};
-		}
-		case "slime": {
-			return {
-				normal: [readState(slimeIdle1State)],
-				normal2: [readState(slimeIdle2State)],
-				happy: [readState(slimeIdle1State)],
-				surprised: [readState(slimeIdle1State)],
-				sad: [readState(slimeIdle1State)],
-				talk: [readState(slimeIdle1State), readState(slimeIdle1State)]
+				stateSet: {
+					normal: [readState(normalState)],
+					normal2: [readState(normal2State)],
+					happy: [readState(happyState)],
+					surprised: [readState(surpriseState)],
+					sad: [readState(sadState)],
+					talk: [readState(talkOpenState), readState(talkCloseState)]
+				},
+				layerDescriptors: [{className: "SnakeTounge"}, {className: "Snake"}, noStyle, noStyle]
 			};
 		}
 	}
 	return {
-		normal: [readState(normalState)],
-		normal2: [readState(normal2State)],
-		happy: [readState(happyState)],
-		surprised: [readState(surpriseState)],
-		sad: [readState(sadState)],
-		talk: [readState(talkOpenState), readState(talkCloseState)]
+		stateSet: {
+			normal: [readState(slimeIdle1State)],
+			normal2: [readState(slimeIdle2State)],
+			happy: [readState(slimeIdle2State)],
+			surprised: [readState(slimeIdle2State)],
+			sad: [readState(slimeSadState)],
+			talk: [readState(slimeIdle2State), readState(slimeIdle2State)]
+		},
+		layerDescriptors:[{className: "Basic"}, {className: "Basic"}, noStyle, noStyle]
 	};
 };
 

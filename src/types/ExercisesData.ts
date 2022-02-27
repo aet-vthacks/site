@@ -1,12 +1,12 @@
-export interface ExerciseData {
-	exercise: {
+export interface ExercisesData {
+	data: {
 		number: number
 		title: string
 		objective: string
 		markdown: string
 		shellCode: string
 		claimed: boolean
-	},
+	}[],
 	user: {
 		pets: {
 			name: string
@@ -14,9 +14,9 @@ export interface ExerciseData {
 			rarity: string
 			species: string
 		}[],
-		preferredPet: number,
 		progress: {
-			level: number,
+			exerciseUUID: number,
+			claimed: boolean
 			code: string,
 			completed: boolean
 		}[]

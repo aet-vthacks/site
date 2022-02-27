@@ -27,7 +27,7 @@ export default function LoginPage() {
 		});
 
 		if (status === 200) {
-			navigate("/learn");
+			navigate("/");
 		}
 	};
 
@@ -69,7 +69,6 @@ export default function LoginPage() {
 								value={username}
 								placeholder="slippy777"
 								onChange={handleUsernameChange}
-								isInvalid={true}
 							/>
 						</FormControl>
 						<FormControl id="password" isRequired>
@@ -78,7 +77,7 @@ export default function LoginPage() {
 								<Input
 									type={showPassword ? "text" : "password"}
 									value={password}
-									placeholder="8+ Characters"
+									placeholder="Enter your password"
 									onChange={handlePasswordChange}
 								/>
 								<InputRightElement h={"full"}>

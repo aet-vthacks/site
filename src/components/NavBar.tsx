@@ -1,20 +1,22 @@
-import { AtSignIcon, LockIcon } from "@chakra-ui/icons";
+import { ArrowLeftIcon, AtSignIcon, LockIcon } from "@chakra-ui/icons";
 import {
-	Avatar, Box, Button, Flex, Menu,
+	Avatar, Box, Button, Flex, Image, Menu,
 	MenuButton, MenuDivider, MenuItem, MenuList, Spinner,
 	useToast
 } from "@chakra-ui/react";
 import { ReactNode, useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { AccountData } from "types";
 import { http } from "utils";
 
 export default function NavBar({ children }: { children: ReactNode }) {
 	const navigate = useNavigate();
+	const location = useLocation();
 	const toast = useToast();
 
 	const [loading, setLoading] = useState(true);
 	const [data, setData] = useState<AccountData | undefined>(undefined);
+	// const [submitButtonFunc] = useContext(SubmitButtonContext);
 
 	useEffect(() => {
 		http.get("me")
@@ -31,10 +33,33 @@ export default function NavBar({ children }: { children: ReactNode }) {
 		);
 	}
 
+	const navHeight = location.pathname.startsWith("/learn/") ? 10 : 14;
+	const iconScale = location.pathname.startsWith("/learn/") ? 6 : 8;
+	const overflow = location.pathname.startsWith("/learn/") ? "hidden" : "initial";
+
 	return (
-		<>
+		<Box h="100vh" w="100vw" overflowY={overflow} overflowX="hidden">
 			<Box bg="green.300" px={4}>
-				<Flex h={16} alignItems={"center"} justifyContent={"flex-end"}>
+				<Flex h={navHeight} alignItems={"center"} justifyContent={"space-between"}>
+					<Flex alignItems={"center"} textAlign={"end"}>
+						{location.pathname.startsWith("/learn/") ? (
+							<>
+								<Button
+									size="sm"
+									leftIcon={<ArrowLeftIcon />}
+									onClick={() => navigate("/")}
+									color="gray.800"
+								>
+									Back to Learn
+								</Button>
+							</>
+						) : <Button
+							variant="unstyled"
+							onClick={() => navigate("/")}
+						>
+							<Image src="/safari-pinned-tab.svg" h={iconScale} w="auto" />
+						</Button>}
+					</Flex>
 					<Flex alignItems={"center"} textAlign={"end"}>
 						{data ? (
 							<Menu>
@@ -45,7 +70,7 @@ export default function NavBar({ children }: { children: ReactNode }) {
 									cursor={"pointer"}
 									minW={0}>
 									<Avatar
-										size={"sm"}
+										size="sm"
 										name={`${data.name.first} ${data.name.last}`}
 									/>
 								</MenuButton>
@@ -85,11 +110,7 @@ export default function NavBar({ children }: { children: ReactNode }) {
 					</Flex>
 				</Flex>
 			</Box>
-
-			<Box>
-				{children}
-			</Box>
-
-		</>
+			{children}
+		</Box>
 	);
 }
