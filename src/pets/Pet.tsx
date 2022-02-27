@@ -5,13 +5,18 @@ import normalState from "assets/normal_data.svg?raw";
 import sadState from "assets/sad_data.svg?raw";
 import slimeIdle1State from "assets/slime0_data.svg?raw";
 import slimeIdle2State from "assets/slime1_data.svg?raw";
+import slimeSurpriseState from "assets/slimesup_data.svg?raw";
 import slimeSadState from "assets/slime_sad_data.svg?raw";
+import slimeHappyState from "assets/slime_smile_data.svg?raw";
+import slimeTalk0State from "assets/slime_talk_0_data.svg?raw";
+import slimeTalk1State from "assets/slime_talk_1_data.svg?raw";
 import surpriseState from "assets/surprise_data.svg?raw";
 import talkCloseState from "assets/talk_close_data.svg?raw";
 import talkOpenState from "assets/talk_open_data.svg?raw";
 import interpolate from "color-interpolate";
 import "pets/pets.css";
 import { useEffect, useRef, useState } from "react";
+
 
 
 
@@ -418,10 +423,10 @@ const genConstructorInfo = (species: Species): PetConstructorInfo => {
 		stateSet: {
 			normal: [readState(slimeIdle1State)],
 			normal2: [readState(slimeIdle2State)],
-			happy: [readState(slimeIdle2State)],
-			surprised: [readState(slimeIdle2State)],
+			happy: [readState(slimeHappyState)],
+			surprised: [readState(slimeSurpriseState)],
 			sad: [readState(slimeSadState)],
-			talk: [readState(slimeIdle2State), readState(slimeIdle2State)]
+			talk: [readState(slimeTalk0State), readState(slimeTalk1State)]
 		},
 		layerDescriptors:[{className: "Basic"}, {className: "Basic"}, noStyle, noStyle]
 	};
